@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Philip Flindt</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style media="screen">
       #video-container {
         cursor: pointer;
@@ -28,9 +30,13 @@
         opacity: 0;
 
         position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
         color: white;
-        top: 20%;
-        left: 5%;
+        padding-top: 20%;
+        padding-left: 5%;
         list-style: none;
 
         font-family: Helvetica, sans-serif;
@@ -57,10 +63,11 @@
       <div><a href="http://www.imdb.com/name/nm3748334/" target="_blank">imdb</a></div>
       <div><a href="https://vimeo.com/philipnicolaiflindt" target="_blank">vimeo</a></div>
       <div>
-        <p>contact</p>
-        <p>gregers maersk moeller</p>
+        <p>Agent,</p>
+        <p>Gregers Mærsk Møller, <a href="http://d4zed.com">D4ZED</a></p>
         <p><a href="mailto:gregers@d4zed.com">gregers@d4zed.com</a></p>
-        <p><a href="tel:+45 60601221">+45 60601221</a></p>
+        <p><a href="tel:+45 60601221">DK +45 60601221</a></p>
+        <p><a href="tel:+1 (213) 457-3385">US +1 (213) 457-3385</a></p>
       </div>
     </div>
     <div id="video-container">
@@ -69,10 +76,13 @@
         Your browser does not support the video tag. I suggest you upgrade your browser.
       </video>
     </div>
+    <script src="resources/iphone-inline-video.js"></script>
     <script>
       var videoWrapper = document.querySelector('#video-container');
       var video = document.querySelector('#video-container > video');
       var linksContainer = document.querySelector('#links');
+
+      makeVideoPlayableInline(video);
 
       videoWrapper.addEventListener('click', function() {
         video.muted = true;
@@ -81,6 +91,14 @@
         setTimeout(function() {
           linksContainer.style.opacity = '1';
         }, 0);
+      });
+
+      links.addEventListener('click', function() {
+        video.muted = false;
+        linksContainer.style.opacity = '0';
+        setTimeout(function() {
+          linksContainer.style.display = 'none';
+        }, 500);
       });
 
       Array.prototype.slice.call(document.querySelectorAll('a')).forEach(function(element) {
