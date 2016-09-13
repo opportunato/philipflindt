@@ -29,6 +29,13 @@
         min-height: 100%;
         min-width: 100%;
       }
+      .mobile-background {
+        background: url(./resources/bg.jpg) top left no-repeat;
+        background-size: cover;
+
+        width: 100%;
+        height: 100%;
+      }
       #links-wrapper {
         align-items: center;
 
@@ -99,8 +106,8 @@
           <p>Agent —</p>
           <p>Gregers Mærsk Møller, <a href="http://d4zed.com" target="_blank">D4ZED</a></p>
           <p><a href="mailto:gregers@d4zed.com" rel="nofollow">gregers@d4zed.com</a></p>
-          <p><a href="tel:+45 60601221" rel="nofollow">DK +45 60601221</a></p>
-          <p><a href="tel:+1 (213) 457-3385" rel="nofollow">US +1 (213) 457-3385</a></p>
+          <p>DK <a href="tel:+4560601221" rel="nofollow">+45 60601221</a></p>
+          <p>US <a href="tel:+1(213)457-3385" rel="nofollow">+1 (213) 457-3385</a></p>
         </div>
       </div>
     </div>
@@ -110,37 +117,49 @@
         Your browser does not support the video tag. I suggest you upgrade your browser.
       </video>
     </div>
+    <script src="resources/modernizr.js"></script>
     <script src="resources/iphone-inline-video.js"></script>
     <script>
       var videoWrapper = document.querySelector('#video-container');
       var video = document.querySelector('#video-container > video');
       var linksContainer = document.querySelector('#links-wrapper');
 
-      if (window.innerWidth > 500) {
-        video.muted = false;
-
-        videoWrapper.addEventListener('click', function() {
-          video.muted = true;
-          linksContainer.style.display = 'flex';
-
-          setTimeout(function() {
-            linksContainer.style.opacity = '1';
-          }, 0);
-        });
-
-        linksContainer.addEventListener('click', function() {
+      Modernizr.on('videoautoplay', function(result) {
+        if (result) {
           video.muted = false;
-          linksContainer.style.opacity = '0';
-          setTimeout(function() {
-            linksContainer.style.display = 'none';
-          }, 500);
-        });
-      } else {
-        linksContainer.style.display = 'flex';
-        linksContainer.style.opacity = '1';
 
-        makeVideoPlayableInline(video, false);
-      }
+          videoWrapper.addEventListener('click', function() {
+            video.muted = true;
+            linksContainer.style.display = 'flex';
+
+            setTimeout(function() {
+              linksContainer.style.opacity = '1';
+            }, 0);
+          });
+
+          linksContainer.addEventListener('click', function() {
+            video.muted = false;
+            linksContainer.style.opacity = '0';
+            setTimeout(function() {
+              linksContainer.style.display = 'none';
+            }, 500);
+          });
+        } else {
+          linksContainer.style.display = 'flex';
+          linksContainer.style.opacity = '1';
+
+          var isIphone = !!navigator.userAgent.match(/iPhone/i);
+
+          if (isIphone) {
+            makeVideoPlayableInline(video, false);
+          } else {
+            videoWrapper.removeChild(video);
+            var img = document.createElement('div');
+            img.classList.add('mobile-background');
+            videoWrapper.appendChild(img);
+          }
+        }
+      });
 
       Array.prototype.slice.call(document.querySelectorAll('a')).forEach(function(element) {
         element.addEventListener('click', function(event) {
