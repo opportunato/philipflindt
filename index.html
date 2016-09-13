@@ -3,9 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>Philip Flindt</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="desription" content="Philip Nicolai Flindt - Sound Designer / Composer">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
     <style media="screen">
+      *, *:before, *:after {
+        box-sizing: border-box;
+      }
       #video-container {
         cursor: pointer;
 
@@ -25,7 +29,9 @@
         min-height: 100%;
         min-width: 100%;
       }
-      #links {
+      #links-wrapper {
+        align-items: center;
+
         display: none;
         opacity: 0;
 
@@ -34,20 +40,21 @@
         top: 0;
         height: 100%;
         width: 100%;
-        color: white;
-        padding-top: 20%;
         padding-left: 5%;
-        list-style: none;
-
-        font-family: Helvetica, sans-serif;
-        font-size: 30px;
-        color: white;
 
         z-index: 1;
         transition: opacity .5s ease-in;
       }
+      #links {
+        color: white;
+        list-style: none;
+
+        font-family: Helvetica, sans-serif;
+        font-size: 2rem;
+        color: white;
+      }
       #links > div {
-        margin-bottom: 50px;
+        margin-bottom: 3rem;
       }
       #links a {
         color: inherit;
@@ -56,18 +63,37 @@
       #links p {
         margin: 10px 0;
       }
+
+      .IIV::-webkit-media-controls-play-button,
+      .IIV::-webkit-media-controls-start-playback-button {
+        opacity: 0;
+        pointer-events: none;
+        width: 5px;
+      }
+
+      html {
+        font-size: 10px;
+      }
+
+      @media only screen and (min-width: 500px) {
+        html {
+          font-size: 16px;
+        }
+      }
     </style>
   </head>
   <body>
-    <div id="links">
-      <div><a href="http://www.imdb.com/name/nm3748334/" target="_blank">imdb</a></div>
-      <div><a href="https://vimeo.com/philipnicolaiflindt" target="_blank">vimeo</a></div>
-      <div>
-        <p>Agent,</p>
-        <p>Gregers Mærsk Møller, <a href="http://d4zed.com">D4ZED</a></p>
-        <p><a href="mailto:gregers@d4zed.com">gregers@d4zed.com</a></p>
-        <p><a href="tel:+45 60601221">DK +45 60601221</a></p>
-        <p><a href="tel:+1 (213) 457-3385">US +1 (213) 457-3385</a></p>
+    <div id="links-wrapper">
+      <div id="links">
+        <div><a href="http://www.imdb.com/name/nm3748334/" target="_blank">imdb</a></div>
+        <div><a href="https://vimeo.com/philipnicolaiflindt" target="_blank">vimeo</a></div>
+        <div>
+          <p>Agent,</p>
+          <p>Gregers Mærsk Møller, <a href="http://d4zed.com">D4ZED</a></p>
+          <p><a href="mailto:gregers@d4zed.com">gregers@d4zed.com</a></p>
+          <p><a href="tel:+45 60601221">DK +45 60601221</a></p>
+          <p><a href="tel:+1 (213) 457-3385">US +1 (213) 457-3385</a></p>
+        </div>
       </div>
     </div>
     <div id="video-container">
@@ -80,29 +106,37 @@
     <script>
       var videoWrapper = document.querySelector('#video-container');
       var video = document.querySelector('#video-container > video');
-      var linksContainer = document.querySelector('#links');
+      var linksContainer = document.querySelector('#links-wrapper');
 
-      makeVideoPlayableInline(video, false);
-
-      videoWrapper.addEventListener('click', function() {
-        video.muted = true;
-        linksContainer.style.display = 'block';
-
-        setTimeout(function() {
-          linksContainer.style.opacity = '1';
-        }, 0);
-      });
-
-      links.addEventListener('click', function() {
+      if (window.innerWidth > 500) {
         video.muted = false;
-        linksContainer.style.opacity = '0';
-        setTimeout(function() {
-          linksContainer.style.display = 'none';
-        }, 500);
-      });
+
+        videoWrapper.addEventListener('click', function() {
+          video.muted = true;
+          linksContainer.style.display = 'flex';
+
+          setTimeout(function() {
+            linksContainer.style.opacity = '1';
+          }, 0);
+        });
+
+        linksContainer.addEventListener('click', function() {
+          video.muted = false;
+          linksContainer.style.opacity = '0';
+          setTimeout(function() {
+            linksContainer.style.display = 'none';
+          }, 500);
+        });
+      } else {
+        linksContainer.style.display = 'flex';
+        linksContainer.style.opacity = '1';
+
+        makeVideoPlayableInline(video, false);
+      }
 
       Array.prototype.slice.call(document.querySelectorAll('a')).forEach(function(element) {
-        element.addEventListener('click', function(element) {
+        element.addEventListener('click', function(event) {
+          event.stopPropagation();
           video.muted = true;
         });
       });
