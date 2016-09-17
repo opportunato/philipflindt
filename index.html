@@ -10,7 +10,8 @@
       *, *:before, *:after {
         box-sizing: border-box;
       }
-      #video-container {
+      #container {
+        background-color: black;
         cursor: pointer;
 
         position: absolute;
@@ -20,7 +21,7 @@
         width: 100%;
         overflow: hidden;
       }
-      #video-container > video {
+      #container > video {
         position: absolute;
         z-index: 0;
         left: 50%;
@@ -29,7 +30,7 @@
         min-height: 100%;
         min-width: 100%;
       }
-      .mobile-background {
+      #mobile-background {
         background: url(./resources/bg.jpg) top left no-repeat;
         background-size: cover;
 
@@ -113,28 +114,34 @@
         </div>
       </div>
     </div>
-    <div id="video-container">
-      <video webkit-playsinline autoplay muted loop>
-        <source src="resources/video.mp4" type="video/mp4"/>
-        Your browser does not support the video tag. I suggest you upgrade your browser.
-      </video>
+    <div id="container">
     </div>
     <script src="resources/modernizr.js"></script>
     <script src="resources/iphone-inline-video.js"></script>
     <script>
-      var videoWrapper = document.querySelector('#video-container');
-      var video = document.querySelector('#video-container > video');
+      var container = document.querySelector('#container');
+      var mobileBackgroundString = "<img id='mobile-background'></div>";
+      var videoString = "<video webkit-playsinline autoplay loop>" +
+          "<source src='resources/video.mp4' type='video/mp4'/>" +
+          "Your browser does not support the video tag. I suggest you upgrade your browser." +
+      "</video>";
+      var video = null;
       var linksContainer = document.querySelector('#links-wrapper');
+
+      function insertVideo() {
+        container.innerHTML = videoString;
+        video = container.firstChild;
+      }
 
       Modernizr.on('videoautoplay', function(result) {
         if (result) {
-          video.muted = false;
+          insertVideo();
 
           Array.prototype.slice.call(document.querySelectorAll('.mobile')).forEach(function(element) {
             element.remove();
           });
 
-          videoWrapper.addEventListener('click', function() {
+          container.addEventListener('click', function() {
             video.muted = true;
             linksContainer.style.display = 'flex';
 
@@ -152,7 +159,9 @@
           });
         } else {
           linksContainer.style.display = 'flex';
-          linksContainer.style.opacity = '1';
+          setTimeout(function() {
+            linksContainer.style.opacity = '1';
+          }, 0);
 
           Array.prototype.slice.call(document.querySelectorAll('.desktop')).forEach(function(element) {
             element.remove();
@@ -161,12 +170,10 @@
           var isIphone = !!navigator.userAgent.match(/iPhone/i);
 
           if (isIphone) {
+            insertVideo();
             makeVideoPlayableInline(video, false);
           } else {
-            video.remove();
-            var img = document.createElement('div');
-            img.classList.add('mobile-background');
-            videoWrapper.appendChild(img);
+            container.innerHTML = mobileBackgroundString;
           }
         }
       });
